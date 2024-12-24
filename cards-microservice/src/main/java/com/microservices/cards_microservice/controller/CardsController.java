@@ -1,6 +1,7 @@
 package com.microservices.cards_microservice.controller;
 
 import com.microservices.cards_microservice.constants.CardsConstants;
+import com.microservices.cards_microservice.dto.CardsContactInfoDto;
 import com.microservices.cards_microservice.dto.CardsDto;
 import com.microservices.cards_microservice.dto.ErrorResponseDto;
 import com.microservices.cards_microservice.dto.ResponseDto;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,9 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class CardsController {
     private ICardsService iCardsService;
+
+    @Autowired
+    private CardsContactInfoDto cardsContactInfoDto;
 
     @Operation(
             summary = "Create Card REST API",
@@ -156,4 +161,25 @@ public class CardsController {
         }
     }
 
+    @Operation(
+            summary = "Get Contact Details",
+            description = "Contact info details"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode="200",
+                    description="HTTP Status OK"
+            ),
+            @ApiResponse(
+                    responseCode="500",
+                    description="HTTP Status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    })
+    @GetMapping("/contact-info")
+    public ResponseEntity<CardsContactInfoDto> getContactInfo() {
+        return ResponseEntity.status(HttpStatus.OK).body(cardsContactInfoDto);
+    }
 }
